@@ -24,6 +24,9 @@ A portal is `{ name, path, kind, createdAt }`, where `kind` is `file`,
       toggle for the other shape
 - [x] **M5** — Manage (`d`): fuzzy delete with a confirmation dialog
 - [x] **M6** — Menu bar mirror of every portal's open/copy actions
+- [x] **M7** — [Dropover](https://dropoverapp.com/) integration (`s`):
+      push a portal onto a Dropover shelf, and pull shelf items into a
+      saved directory portal from Dropover's own Actions menu
 
 ## Install
 
@@ -71,8 +74,36 @@ Reload Hammerspoon's config after editing (menu bar icon → Reload Config).
   one copy.
 - **Delete** (`d`): same chooser; Enter prompts to confirm, then removes the
   picked portal.
+- **Send to shelf** (`s`): same chooser; Enter hands the portal's path to
+  [Dropover](https://dropoverapp.com/) via its documented
+  `open -a Dropover -- <path>` terminal-import hook, creating a shelf (or
+  adding to the frontmost one) with it. Works for any kind.
 - The menu bar icon (⛩) lists every portal with Open/Copy submenu items, as
   a mouse-driven mirror of `o`/`c`.
+
+## Dropover integration
+
+Two directions, both riding Dropover's own documented automation surface
+(see [dropoverapp.com/tips](https://dropoverapp.com/tips), tips #4/#5/#14) —
+nothing unofficial or UI-scripted:
+
+- **Portal → shelf**: press `s` in Portal's modal (see above). Uses
+  `open -a Dropover -- <path>`, Dropover's terminal-import hook.
+- **Shelf → Portal**: [dropover-send-to-portal.sh](dropover-send-to-portal.sh)
+  is a Dropover "Custom Script" — Dropover invokes shell scripts with the
+  shelf's file paths as plain arguments, so this one forwards them (via a
+  temp file, to dodge shell/Lua quoting) to
+  `spoon.Portal:receiveFromShelf(...)` over the Hammerspoon CLI (`hs -c`,
+  needs `require("hs.ipc")` in your `init.lua` — already there if you're
+  using this repo's sibling Spoons). That opens a fuzzy chooser over every
+  saved *directory* portal; Enter `mv`s the shelf's items there, or hold
+  shift to `cp` instead.
+
+  To install: Dropover Settings → Shelf Interaction → Advanced… → Custom
+  scripts → reveal the Application Scripts folder, copy or symlink
+  `dropover-send-to-portal.sh` there, then add it from that same screen
+  (output: ignored — Portal's own alert reports the result). It'll show up
+  in every shelf's Actions menu.
 
 ## Design notes / open questions carried over from the handover doc
 

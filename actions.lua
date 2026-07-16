@@ -3,6 +3,7 @@ local M = {}
 local function shellQuote(s)
   return "'" .. s:gsub("'", "'\\''") .. "'"
 end
+M.shellQuote = shellQuote
 
 -- Percent-encodes everything but URL-safe characters, for building a
 -- file:// URL out of an arbitrary filesystem path.
@@ -18,6 +19,14 @@ function M.open(portal)
   else
     hs.execute("open " .. shellQuote(portal.path))
   end
+end
+
+-- Hands the portal's path to Dropover via its documented `open -a Dropover
+-- -- <path>` terminal-import hook, creating a shelf (or adding to the
+-- frontmost one) with it. Works for any kind - Dropover treats a folder or
+-- .app bundle as just another path.
+function M.sendToShelf(portal)
+  hs.execute("open -a Dropover -- " .. shellQuote(portal.path))
 end
 
 -- kind: "file" writes an NSURL file object (Finder-pasteable); "path" writes

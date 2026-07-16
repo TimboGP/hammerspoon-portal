@@ -7,7 +7,7 @@ local obj = {}
 obj.__index = obj
 
 obj.name = "Portal"
-obj.version = "0.1.0"
+obj.version = "0.2.0"
 obj.author = "tboehm"
 obj.license = "MIT"
 obj.homepage = "https://github.com/TimboGP/hammerspoon-portal"
@@ -21,6 +21,7 @@ local chooser = dofile(obj.spoonPath .. "chooser.lua")
 local actions = dofile(obj.spoonPath .. "actions.lua")
 local menubar = dofile(obj.spoonPath .. "menubar.lua")
 local modal = dofile(obj.spoonPath .. "modal.lua")
+local dropover = dofile(obj.spoonPath .. "dropover.lua")
 
 function obj:init()
   self.config = config
@@ -35,6 +36,14 @@ function obj:start()
     chooser = chooser,
     actions = actions,
   })
+  return self
+end
+
+-- Entry point for Dropover's "Custom Scripts" shelf action, invoked via
+-- `hs -c` (see dropover-send-to-portal.sh) with the shelf's file paths
+-- newline-joined into `pathsText`.
+function obj:receiveFromShelf(pathsText)
+  dropover.receiveFiles(store, chooser, actions, pathsText)
   return self
 end
 

@@ -65,6 +65,12 @@ local function copyPortal(store, chooser, actions, config)
   end)
 end
 
+local function sendToShelf(store, chooser, actions)
+  chooser.pick(store.list(), "Portal: send to Dropover shelf", function(portal)
+    if portal then actions.sendToShelf(portal) end
+  end)
+end
+
 local function managePortal(store, chooser)
   chooser.pick(store.list(), "Portal: delete", function(portal)
     if not portal then return end
@@ -97,7 +103,7 @@ function M.start(config, deps)
   end
 
   function modal:entered()
-    hs.alert.show("Portal leader engaged\na add | o open | c copy | d delete | esc cancel", 3)
+    hs.alert.show("Portal leader engaged\na add | o open | c copy | d delete | s shelf | esc cancel", 3)
     resetIdleTimer()
   end
 
@@ -119,6 +125,7 @@ function M.start(config, deps)
   bind("o", function() openPortal(store, chooser, actions) end)
   bind("c", function() copyPortal(store, chooser, actions, config) end)
   bind("d", function() managePortal(store, chooser) end)
+  bind("s", function() sendToShelf(store, chooser, actions) end)
   modal:bind({}, "escape", nil, function() modal:exit() end)
 
   M.instance = modal
