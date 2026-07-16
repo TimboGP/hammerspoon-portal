@@ -105,14 +105,17 @@ nothing unofficial or UI-scripted:
   ./setup-dropover.sh
   ```
 
-  This symlinks the script into Dropover's sandboxed Application Scripts
+  This copies the script into Dropover's sandboxed Application Scripts
   folder (`~/Library/Application Scripts/me.damir.dropover-mac`) and checks
-  the `hs` CLI is on `PATH`. Symlinking alone isn't enough, though — Dropover
-  only picks up a script once you import it through its own UI, which the
-  script prints instructions for: Dropover Settings → Shelf Interaction →
-  Advanced… → Custom scripts → Add (+) → pick `dropover-send-to-portal.sh` →
-  leave "Script output" ignored. It then shows up in every shelf's Actions
-  menu.
+  the `hs` CLI is on `PATH` — a symlink doesn't work here, Dropover's Custom
+  Scripts import dialog can't resolve one pointing outside its own
+  container, so re-run this script after editing
+  `dropover-send-to-portal.sh` to pick up changes. Copying alone isn't
+  enough either, though — Dropover only picks up a script once you import
+  it through its own UI, which the script prints instructions for: Dropover
+  Settings → Shelf Interaction → Advanced… → Custom scripts → Add (+) →
+  pick `dropover-send-to-portal.sh` → leave "Script output" ignored. It
+  then shows up in every shelf's Actions menu.
 
 ## Design notes / open questions carried over from the handover doc
 

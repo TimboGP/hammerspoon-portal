@@ -26,9 +26,14 @@ if [ ! -d "$DROPOVER_SCRIPTS_DIR" ]; then
 fi
 echo "[ok] Dropover Application Scripts folder found"
 
-# --- 2. Symlink the script in ---------------------------------------------
-ln -sfn "$REPO_DIR/dropover-send-to-portal.sh" "$DROPOVER_SCRIPTS_DIR/dropover-send-to-portal.sh"
-echo "[ok] symlinked as $DROPOVER_SCRIPTS_DIR/dropover-send-to-portal.sh"
+# --- 2. Copy the script in -------------------------------------------------
+# A symlink doesn't work here: Dropover's Custom Scripts import dialog is
+# sandboxed and can't resolve a link pointing outside its own container, so
+# this is a real copy - re-run this script after editing
+# dropover-send-to-portal.sh in the repo to pick up changes.
+cp "$REPO_DIR/dropover-send-to-portal.sh" "$DROPOVER_SCRIPTS_DIR/dropover-send-to-portal.sh"
+chmod +x "$DROPOVER_SCRIPTS_DIR/dropover-send-to-portal.sh"
+echo "[ok] copied to $DROPOVER_SCRIPTS_DIR/dropover-send-to-portal.sh"
 
 # --- 3. hs CLI --------------------------------------------------------------
 # Checked via PATH, not hs.ipc.cliStatus() - same reasoning as instantvim's
@@ -50,7 +55,7 @@ cat <<EOF
 == Remaining manual steps ==
 
 Dropover only picks up scripts from its Application Scripts folder once
-you import them through its own UI - symlinking the file in isn't enough:
+you import them through its own UI - copying the file in isn't enough:
 
 1. Open Dropover Settings -> Shelf Interaction -> Advanced... -> Custom
    scripts.
