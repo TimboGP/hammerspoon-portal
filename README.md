@@ -99,11 +99,20 @@ nothing unofficial or UI-scripted:
   saved *directory* portal; Enter `mv`s the shelf's items there, or hold
   shift to `cp` instead.
 
-  To install: Dropover Settings → Shelf Interaction → Advanced… → Custom
-  scripts → reveal the Application Scripts folder, copy or symlink
-  `dropover-send-to-portal.sh` there, then add it from that same screen
-  (output: ignored — Portal's own alert reports the result). It'll show up
-  in every shelf's Actions menu.
+  To install, run:
+
+  ```sh
+  ./setup-dropover.sh
+  ```
+
+  This symlinks the script into Dropover's sandboxed Application Scripts
+  folder (`~/Library/Application Scripts/me.damir.dropover-mac`) and checks
+  the `hs` CLI is on `PATH`. Symlinking alone isn't enough, though — Dropover
+  only picks up a script once you import it through its own UI, which the
+  script prints instructions for: Dropover Settings → Shelf Interaction →
+  Advanced… → Custom scripts → Add (+) → pick `dropover-send-to-portal.sh` →
+  leave "Script output" ignored. It then shows up in every shelf's Actions
+  menu.
 
 ## Design notes / open questions carried over from the handover doc
 
