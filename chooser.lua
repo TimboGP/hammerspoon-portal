@@ -34,22 +34,18 @@ function M.pick(portals, placeholderText, callback)
   ch:show()
 end
 
---- Single-field free text entry, built on hs.chooser (a lone static row so
---- Enter always fires with whatever the user typed/left in the query
---- field). Used for manual paths and naming portals during add/rename.
-function M.textPrompt(placeholderText, defaultQuery, callback)
-  local ch
-  ch = hs.chooser.new(function(choice)
-    if not choice then
-      callback(nil)
-    else
-      callback(ch:query())
-    end
-  end)
-  ch:placeholderText(placeholderText)
-  ch:choices({ { text = placeholderText } })
-  ch:query(defaultQuery or "")
-  ch:show()
+--- Single-field free text entry via a native OS dialog (hs.dialog.textPrompt),
+--- not hs.chooser — a chooser fuzzy-filters its choice list against the typed
+--- query, so free text that doesn't match a placeholder row leaves nothing to
+--- select and Enter never fires. Used for manual paths and naming portals
+--- during add/rename.
+function M.textPrompt(title, defaultQuery, callback)
+  local button, text = hs.dialog.textPrompt(title, "", defaultQuery or "", "OK", "Cancel")
+  if button ~= "OK" or not text or text == "" then
+    callback(nil)
+    return
+  end
+  callback(text)
 end
 
 return M

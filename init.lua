@@ -29,12 +29,16 @@ end
 
 function obj:start()
   store.start(self.config)
-  menubar.start(store, actions)
   modal.start(self.config, {
     store = store,
     capture = capture,
     chooser = chooser,
     actions = actions,
+  })
+  menubar.start(store, actions, {
+    leader = self.config.leader,
+    bindings = modal.bindings(),
+    iconSize = self.config.menubarIconSize,
   })
   return self
 end
@@ -50,6 +54,12 @@ end
 function obj:stop()
   menubar.stop()
   return self
+end
+
+--- Structured {key, short, description} rows for the leader modal's
+--- bindings, for external cheat-sheet tools (e.g. CheatSheet.spoon) to query.
+function obj:bindings()
+  return modal.bindings()
 end
 
 return obj

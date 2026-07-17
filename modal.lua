@@ -95,6 +95,29 @@ function M.start(config, deps)
   local modal = hs.hotkey.modal.new(config.leader[1], config.leader[2])
   local idleTimer = nil
 
+  -- `fn` is included so callers other than the modal itself (the menu bar's
+  -- shortcut list) can trigger the exact same action by click, not just by
+  -- key - a single source of truth for what each shortcut does.
+  local bindings = {
+    { key = "a", short = "add", description = "add (Finder selection / frontmost app / manual path)",
+      fn = function() addPortal(store, capture, chooser) end },
+    { key = "o", short = "open", description = "open picked portal",
+      fn = function() openPortal(store, chooser, actions) end },
+    { key = "c", short = "copy", description = "copy picked portal (shift = alternate kind)",
+      fn = function() copyPortal(store, chooser, actions, config) end },
+    { key = "d", short = "delete", description = "delete picked portal",
+      fn = function() managePortal(store, chooser) end },
+    { key = "s", short = "shelf", description = "send picked portal to Dropover shelf",
+      fn = function() sendToShelf(store, chooser, actions) end },
+  }
+  M._bindings = bindings
+
+  local row = {}
+  for _, b in ipairs(bindings) do
+    table.insert(row, b.key .. " " .. b.short)
+  end
+  local cheatSheet = "Portal leader engaged\n" .. table.concat(row, " | ") .. " | esc cancel"
+
   local function resetIdleTimer()
     if idleTimer then idleTimer:stop() end
     idleTimer = hs.timer.doAfter(config.modalIdleTimeout, function()
@@ -103,7 +126,7 @@ function M.start(config, deps)
   end
 
   function modal:entered()
-    hs.alert.show("Portal leader engaged\na add | o open | c copy | d delete | s shelf | esc cancel", 3)
+    hs.alert.show(cheatSheet, 3)
     resetIdleTimer()
   end
 
@@ -114,22 +137,22 @@ function M.start(config, deps)
     end
   end
 
-  local function bind(key, fn)
-    modal:bind({}, key, nil, function()
+  for _, b in ipairs(bindings) do
+    modal:bind({}, b.key, nil, function()
       modal:exit()
-      fn()
+      b.fn()
     end)
   end
-
-  bind("a", function() addPortal(store, capture, chooser) end)
-  bind("o", function() openPortal(store, chooser, actions) end)
-  bind("c", function() copyPortal(store, chooser, actions, config) end)
-  bind("d", function() managePortal(store, chooser) end)
-  bind("s", function() sendToShelf(store, chooser, actions) end)
   modal:bind({}, "escape", nil, function() modal:exit() end)
 
   M.instance = modal
   return modal
+end
+
+-- Structured {key, short, description} rows for the leader modal's binds,
+-- built once in M.start(); consumed by CheatSheet.spoon.
+function M.bindings()
+  return M._bindings or {}
 end
 
 return M

@@ -117,6 +117,20 @@ nothing unofficial or UI-scripted:
   pick `dropover-send-to-portal.sh` → leave "Script output" ignored. It
   then shows up in every shelf's Actions menu.
 
+## Troubleshooting
+
+If the leader key alert appears but subsequent keys (`a`, `o`, `c`, `d`, `s`)
+don't seem to register and instead leak through to whatever app is focused,
+check **System Settings → Privacy & Security → Input Monitoring** and make
+sure Hammerspoon is listed there and enabled (this is separate from
+Accessibility). If you just added it, **fully restart macOS** — a simple
+relaunch of Hammerspoon.app is not enough for this permission to take effect.
+
+If that's already granted, check for other global keyboard/automation tools
+that might be capturing the same keys first — Karabiner-Elements, Raycast,
+Alfred, Rectangle, Magnet, or similar. Try quitting them one at a time to
+isolate the culprit, or reassign `config.leader` to a combo they don't use.
+
 ## Design notes / open questions carried over from the handover doc
 
 - **Copy default** — file object, per above, with the shift toggle rather
