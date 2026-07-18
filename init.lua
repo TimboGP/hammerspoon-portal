@@ -22,6 +22,7 @@ local actions = dofile(obj.spoonPath .. "actions.lua")
 local menubar = dofile(obj.spoonPath .. "menubar.lua")
 local modal = dofile(obj.spoonPath .. "modal.lua")
 local dropover = dofile(obj.spoonPath .. "dropover.lua")
+local KeybindRegistry = require("keybind_registry")
 
 function obj:init()
   self.config = config
@@ -36,10 +37,22 @@ function obj:start()
     actions = actions,
   })
   menubar.start(store, actions, {
-    leader = self.config.leader,
     bindings = modal.bindings(),
     iconSize = self.config.menubarIconSize,
   })
+
+  -- The leader combo itself is owned by Leader.spoon; this just registers
+  -- the "o" (Open) domain's single entry point, which still opens this
+  -- Spoon's own pre-existing flat verb menu one level in (see
+  -- shortcut-system.md's "o domain detail (macOS)").
+  KeybindRegistry.bind({
+    scope = "leader",
+    path = { "o" },
+    desc = "open (portals)",
+    fn = function() modal.instance:enter() end,
+    spoonName = self.name,
+  })
+
   return self
 end
 
@@ -52,6 +65,7 @@ function obj:receiveFromShelf(pathsText)
 end
 
 function obj:stop()
+  KeybindRegistry.unbindBySpoon(self.name)
   menubar.stop()
   return self
 end

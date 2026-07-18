@@ -1,7 +1,9 @@
 local home = os.getenv("HOME")
 
 return {
-  leader = { { "cmd", "ctrl", "alt" }, "p" },
+  -- No longer binds its own physical leader combo - reached via the shared
+  -- Leader.spoon tree at path {"o"} (default ⌘⌃⌥Space → o). See
+  -- dotfiles' shortcut-system.md and modal.lua / init.lua's obj:start().
   modalIdleTimeout = 3.5,
 
   storagePath = home .. "/.hammerspoon/portal.json",

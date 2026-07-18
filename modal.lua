@@ -92,7 +92,10 @@ end
 function M.start(config, deps)
   local store, capture, chooser, actions = deps.store, deps.capture, deps.chooser, deps.actions
 
-  local modal = hs.hotkey.modal.new(config.leader[1], config.leader[2])
+  -- Unbound: entry is now driven by the shared keybind_registry (see
+  -- init.lua's registration under path {"o"}), not a direct hs.hotkey bind
+  -- on config.leader here.
+  local modal = hs.hotkey.modal.new()
   local idleTimer = nil
 
   -- `fn` is included so callers other than the modal itself (the menu bar's

@@ -56,9 +56,10 @@ Reload Hammerspoon's config after editing (menu bar icon → Reload Config).
 
 ## Usage
 
-- Leader key: `cmd+ctrl+alt+p` (default, see `config.lua`). Press it to
-  enter the modal; an alert confirms entry and lists the keys below. Press
-  `esc`, or wait ~3.5s idle, to exit.
+- Leader: `⌘⌃⌥Space → o` (via the shared `Leader.spoon` + `keybind_registry`
+  — see `dotfiles/shortcut-system.md`; this Spoon no longer binds its own
+  physical combo). Press it to enter the modal; an alert confirms entry and
+  lists the keys below. Press `esc`, or wait ~3.5s idle, to exit.
 - **Add** (`a`): captures a candidate in this priority order — every item
   currently selected in the frontmost Finder window, otherwise the
   frontmost (non-Finder) app's bundle, otherwise a manual-path prompt
@@ -129,7 +130,9 @@ relaunch of Hammerspoon.app is not enough for this permission to take effect.
 If that's already granted, check for other global keyboard/automation tools
 that might be capturing the same keys first — Karabiner-Elements, Raycast,
 Alfred, Rectangle, Magnet, or similar. Try quitting them one at a time to
-isolate the culprit, or reassign `config.leader` to a combo they don't use.
+isolate the culprit, or reassign `Leader.spoon`'s leader combo (see
+`hammerspoon-leader`'s `bindLeaderKey` call in `init.lua`) to one they
+don't use.
 
 ## Design notes / open questions carried over from the handover doc
 

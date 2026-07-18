@@ -2,28 +2,14 @@ local M = {}
 
 local item = nil
 
-local modifierSymbols = {
-  cmd = "⌘", ctrl = "⌃", alt = "⌥", shift = "⇧",
-}
-
---- Renders a `{ {"cmd", "ctrl", ...}, "p" }` hotkey spec as e.g. "⌘⌃⌥P".
-local function formatHotkey(spec)
-  local mods, key = spec[1], spec[2]
-  local out = {}
-  for _, mod in ipairs(mods) do
-    table.insert(out, modifierSymbols[mod] or mod)
-  end
-  table.insert(out, key:upper())
-  return table.concat(out)
-end
-
---- Structured shortcut list: a disabled "Leader: ⌘⌃⌥P" header (informational
---- only - there's no single item to click for a modifier chord) plus one
+--- Structured shortcut list: a disabled note on how to reach this modal
+--- (it's reached through the shared Leader.spoon tree now, not its own
+--- physical combo - see shortcut-system.md's "o domain detail") plus one
 --- clickable row per leader-modal binding, e.g. "  a  add", that runs the
 --- exact same function as pressing that key in the modal.
-local function shortcutMenuItems(leader, bindings)
+local function shortcutMenuItems(bindings)
   local items = {}
-  table.insert(items, { title = "Leader: " .. formatHotkey(leader), disabled = true })
+  table.insert(items, { title = "Leader: ⌘⌃⌥Space → o", disabled = true })
   for _, b in ipairs(bindings or {}) do
     table.insert(items, { title = "  " .. b.key .. "  " .. b.short, fn = b.fn })
   end
@@ -42,8 +28,8 @@ function M.start(store, actions, options)
   local function rebuildMenu()
     local menu = {}
 
-    if options.leader then
-      for _, entry in ipairs(shortcutMenuItems(options.leader, options.bindings)) do
+    if options.bindings then
+      for _, entry in ipairs(shortcutMenuItems(options.bindings)) do
         table.insert(menu, entry)
       end
       table.insert(menu, { title = "-" })
