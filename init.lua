@@ -19,6 +19,7 @@ local store = dofile(obj.spoonPath .. "store.lua")
 local capture = dofile(obj.spoonPath .. "capture.lua")
 local chooser = dofile(obj.spoonPath .. "chooser.lua")
 local actions = dofile(obj.spoonPath .. "actions.lua")
+local flatten = dofile(obj.spoonPath .. "flatten.lua")
 local menubar = dofile(obj.spoonPath .. "menubar.lua")
 local modal = dofile(obj.spoonPath .. "modal.lua")
 local dropover = dofile(obj.spoonPath .. "dropover.lua")
@@ -35,11 +36,14 @@ function obj:start()
     capture = capture,
     chooser = chooser,
     actions = actions,
+    flatten = flatten,
   })
   menubar.start(store, actions, {
     bindings = modal.bindings(),
     iconSize = self.config.menubarIconSize,
     spoonPath = obj.spoonPath,
+    chooser = chooser,
+    flatten = flatten,
   })
 
   -- The leader combo itself is owned by Leader.spoon; this just registers

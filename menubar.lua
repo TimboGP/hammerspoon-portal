@@ -70,13 +70,17 @@ function M.start(store, actions, options)
     table.insert(menu, { title = "-" })
 
     for _, portal in ipairs(store.list()) do
-      table.insert(menu, {
-        title = portal.name,
-        menu = {
-          { title = "Open", fn = function() actions.open(portal) end },
-          { title = "Copy", fn = function() actions.copy(portal) end },
-        },
-      })
+      local portalMenu = {
+        { title = "Open", fn = function() actions.open(portal) end },
+        { title = "Copy", fn = function() actions.copy(portal) end },
+      }
+      if portal.kind == "directory" and options.flatten then
+        table.insert(portalMenu, {
+          title = "Flatten Subfolder (⇧ = copy)",
+          fn = function() options.flatten.run(options.chooser, actions, portal) end,
+        })
+      end
+      table.insert(menu, { title = portal.name, menu = portalMenu })
     end
     if #store.list() == 0 then
       table.insert(menu, { title = "No portals yet", disabled = true })

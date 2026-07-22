@@ -90,7 +90,7 @@ end
 -- this one wires together; passed in rather than required so every module
 -- stays a plain dofile()'d table (matches this repo's other Spoons).
 function M.start(config, deps)
-  local store, capture, chooser, actions = deps.store, deps.capture, deps.chooser, deps.actions
+  local store, capture, chooser, actions, flatten = deps.store, deps.capture, deps.chooser, deps.actions, deps.flatten
 
   -- Unbound: entry is now driven by the shared keybind_registry (see
   -- init.lua's registration under path {"o"}), not a direct hs.hotkey bind
@@ -112,6 +112,8 @@ function M.start(config, deps)
       fn = function() managePortal(store, chooser) end },
     { key = "s", short = "shelf", description = "send picked portal to Dropover shelf",
       fn = function() sendToShelf(store, chooser, actions) end },
+    { key = "f", short = "flatten", description = "flatten picked directory portal's subfolder up (shift = copy instead of move)",
+      fn = function() flatten.pick(store, chooser, actions) end },
   }
   M._bindings = bindings
 

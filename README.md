@@ -27,6 +27,9 @@ A portal is `{ name, path, kind, createdAt }`, where `kind` is `file`,
 - [x] **M7** — [Dropover](https://dropoverapp.com/) integration (`s`):
       push a portal onto a Dropover shelf, and pull shelf items into a
       saved directory portal from Dropover's own Actions menu
+- [x] **M8** — Flatten (`f`): pull a directory portal's subfolder contents
+      up into the portal itself, e.g. undoing the extra nesting level a
+      downloaded/unzipped archive often leaves behind
 
 ## Install
 
@@ -79,8 +82,17 @@ Reload Hammerspoon's config after editing (menu bar icon → Reload Config).
   [Dropover](https://dropoverapp.com/) via its documented
   `open -a Dropover -- <path>` terminal-import hook, creating a shelf (or
   adding to the frontmost one) with it. Works for any kind.
-- The menu bar icon (⛩) lists every portal with Open/Copy submenu items, as
-  a mouse-driven mirror of `o`/`c`.
+- **Flatten** (`f`): fuzzy chooser over every saved portal; Enter picks a
+  directory portal, finds its immediate subdirectories, and moves every item
+  directly inside one up into the portal itself — the subdirectory is left
+  in place, now emptied, rather than removed. With exactly one subdirectory
+  it acts right away; with several, a second chooser asks which one; with
+  none, it alerts and does nothing. An item whose name already exists at the
+  destination is skipped (never overwritten) and called out in the result
+  alert. Hold shift to copy instead of the default move.
+- The menu bar icon (⛩) lists every portal with Open/Copy submenu items (plus
+  Flatten Subfolder for directory portals), as a mouse-driven mirror of
+  `o`/`c`/`f`.
 
 ## Dropover integration
 
@@ -120,8 +132,8 @@ nothing unofficial or UI-scripted:
 
 ## Troubleshooting
 
-If the leader key alert appears but subsequent keys (`a`, `o`, `c`, `d`, `s`)
-don't seem to register and instead leak through to whatever app is focused,
+If the leader key alert appears but subsequent keys (`a`, `o`, `c`, `d`, `s`,
+`f`) don't seem to register and instead leak through to whatever app is focused,
 check **System Settings → Privacy & Security → Input Monitoring** and make
 sure Hammerspoon is listed there and enabled (this is separate from
 Accessibility). If you just added it, **fully restart macOS** — a simple
