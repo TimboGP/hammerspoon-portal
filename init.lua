@@ -39,6 +39,7 @@ function obj:start()
   menubar.start(store, actions, {
     bindings = modal.bindings(),
     iconSize = self.config.menubarIconSize,
+    spoonPath = obj.spoonPath,
   })
 
   -- The leader combo itself is owned by Leader.spoon; this just registers

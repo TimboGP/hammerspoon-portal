@@ -1,6 +1,29 @@
 local M = {}
 
 local item = nil
+local spoonPath = nil
+local iconImage = nil
+
+-- Persisted across Hammerspoon restarts so the chosen glyph sticks.
+local ICON_STYLE_SETTING = "Portal.menubarIconStyle"
+
+local function currentStyle()
+  return hs.settings.get(ICON_STYLE_SETTING) or "torii"
+end
+
+local function applyIcon(options)
+  if currentStyle() == "gateway" and iconImage then
+    item:setIcon(iconImage, true)
+    item:setTitle("")
+  else
+    item:setIcon(nil)
+    if options.iconSize then
+      item:setTitle(hs.styledtext.new("⛩", { font = { size = options.iconSize } }))
+    else
+      item:setTitle("⛩")
+    end
+  end
+end
 
 --- Structured shortcut list: a disabled note on how to reach this modal
 --- (it's reached through the shared Leader.spoon tree now, not its own
@@ -18,12 +41,13 @@ end
 
 function M.start(store, actions, options)
   options = options or {}
-  item = hs.menubar.new()
-  if options.iconSize then
-    item:setTitle(hs.styledtext.new("⛩", { font = { size = options.iconSize } }))
-  else
-    item:setTitle("⛩")
+  spoonPath = options.spoonPath
+  if spoonPath then
+    iconImage = hs.image.imageFromPath(spoonPath .. "icons/portal-menubar.svg")
   end
+
+  item = hs.menubar.new()
+  applyIcon(options)
 
   local function rebuildMenu()
     local menu = {}
@@ -32,8 +56,18 @@ function M.start(store, actions, options)
       for _, entry in ipairs(shortcutMenuItems(options.bindings)) do
         table.insert(menu, entry)
       end
-      table.insert(menu, { title = "-" })
     end
+
+    local nextStyle = currentStyle() == "gateway" and "torii" or "gateway"
+    local toggleTitle = nextStyle == "gateway" and "Use Gateway Icon" or "Use Torii Icon"
+    table.insert(menu, {
+      title = toggleTitle,
+      fn = function()
+        hs.settings.set(ICON_STYLE_SETTING, nextStyle)
+        applyIcon(options)
+      end,
+    })
+    table.insert(menu, { title = "-" })
 
     for _, portal in ipairs(store.list()) do
       table.insert(menu, {

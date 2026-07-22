@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Portal menu-bar icon
+  White-only vector artwork on a transparent 24 × 24 canvas.
+  The small tile moves into a circular space gateway, representing a marked
+  file or folder ready to open or move by shortcut.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <title>Portal</title>
+  <!-- Space gateway -->
+  <circle cx="14.5" cy="12" r="6.5" stroke="#FFFFFF" stroke-width="3"/>
+
+  <!-- Marked file or folder tile -->
+  <rect x="2" y="9" width="5" height="6" rx="1" fill="#FFFFFF"/>
+
+  <!-- Transfer path -->
+  <path d="M8.5 12H14.5" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+  <path d="M13 9.5L15.5 12L13 14.5" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
