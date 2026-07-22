@@ -114,6 +114,8 @@ function M.start(config, deps)
       fn = function() sendToShelf(store, chooser, actions) end },
     { key = "f", short = "flatten", description = "flatten picked directory portal's subfolder up (shift = copy instead of move)",
       fn = function() flatten.pick(store, chooser, actions) end },
+    { key = "n", short = "new window", description = "open a new Finder window",
+      fn = function() actions.openNewFinderWindow() end },
   }
   M._bindings = bindings
 

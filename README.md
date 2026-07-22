@@ -90,6 +90,8 @@ Reload Hammerspoon's config after editing (menu bar icon → Reload Config).
   none, it alerts and does nothing. An item whose name already exists at the
   destination is skipped (never overwritten) and called out in the result
   alert. Hold shift to copy instead of the default move.
+- **New Finder window** (`n`): opens a plain new Finder window, same as
+  Finder's own `⌘N` — no portal picker involved.
 - The menu bar icon (⛩) lists every portal with Open/Copy submenu items (plus
   Flatten Subfolder for directory portals), as a mouse-driven mirror of
   `o`/`c`/`f`.

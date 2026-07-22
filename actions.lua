@@ -29,6 +29,18 @@ function M.sendToShelf(portal)
   hs.execute("open -a Dropover -- " .. shellQuote(portal.path))
 end
 
+-- Opens a plain new Finder window (not tied to any portal), same as
+-- Finder's own Cmd+N. `open -na Finder` alone doesn't always spawn a window
+-- when Finder is already running, so this drives Finder directly.
+function M.openNewFinderWindow()
+  hs.osascript.applescript([[
+    tell application "Finder"
+      make new Finder window
+      activate
+    end tell
+  ]])
+end
+
 -- kind: "file" writes an NSURL file object (Finder-pasteable); "path" writes
 -- a plain path string. Defaults to config.defaultCopyKind.
 function M.copy(portal, kind)
