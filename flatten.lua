@@ -86,9 +86,31 @@ function M.run(chooser, actions, portal)
   end)
 end
 
---- Modal/menu-bar entry point: picks a directory portal first, then
---- delegates to M.run.
-function M.pick(store, chooser, actions)
+--- Modal entry point: prefers the current Finder selection (mirrors
+--- addPortal's capture-first behavior in modal.lua) so a directory can be
+--- flattened without saving it as a portal first. With no directory in the
+--- Finder selection, falls back to picking a saved portal.
+function M.pick(store, chooser, actions, capture)
+  local selected = {}
+  if capture then
+    for _, path in ipairs(capture.finderSelection()) do
+      local candidate = capture.fromManualPath(path)
+      if candidate and candidate.kind == "directory" then table.insert(selected, candidate) end
+    end
+  end
+
+  if #selected == 1 then
+    M.run(chooser, actions, selected[1])
+    return
+  end
+
+  if #selected > 1 then
+    chooser.pick(selected, "Portal: which selected folder to flatten", function(dir)
+      if dir then M.run(chooser, actions, dir) end
+    end)
+    return
+  end
+
   chooser.pick(store.list(), "Portal: flatten subfolder (shift = copy)", function(portal)
     if portal then M.run(chooser, actions, portal) end
   end)
