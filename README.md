@@ -30,8 +30,15 @@ A portal is `{ name, path, kind, createdAt }`, where `kind` is `file`,
 - [x] **M8** — Flatten (`f`): pull a directory portal's subfolder contents
       up into the portal itself, e.g. undoing the extra nesting level a
       downloaded/unzipped archive often leaves behind
+- [x] **M9** — Jump (`j`): passively tracks directories visited in Finder and
+      ranks them by frecency via [zoxide](https://github.com/ajeetdsouza/zoxide),
+      sharing its database with your terminal's own `z`/`zoxide` usage
 
 ## Install
+
+Jump (`j`) requires [zoxide](https://github.com/ajeetdsouza/zoxide)
+(`brew install zoxide`) — every other feature works without it; if it's
+missing, `j` just alerts and does nothing.
 
 This repo's root *is* the Spoon (no `Portal.spoon/` subfolder) — clone it
 directly into your Spoons directory, naming the local checkout
@@ -92,6 +99,17 @@ Reload Hammerspoon's config after editing (menu bar icon → Reload Config).
   alert. Hold shift to copy instead of the default move.
 - **New Finder window** (`n`): opens a plain new Finder window, same as
   Finder's own `⌘N` — no portal picker involved.
+- **Jump** (`j`): fuzzy chooser over every directory
+  [zoxide](https://github.com/ajeetdsouza/zoxide) knows about — every folder
+  the frontmost Finder window has navigated to (tracked passively in the
+  background, no `a` needed) plus anything you've `cd`'d to in a terminal,
+  since it's the same shared frecency database. Rows are pre-sorted
+  best-first by zoxide's own frecency score; Enter reveals the picked folder
+  in Finder. Requires `zoxide` on the system (`brew install zoxide`) — if
+  it's missing, `j` alerts and does nothing rather than erroring. This is a
+  deliberate, narrow exception to the rest of Portal's explicit-add-only
+  design (see "Design notes" below) — it doesn't touch the portals list or
+  any other action.
 - The menu bar icon (⛩) lists every portal with Open/Copy submenu items (plus
   Flatten Subfolder for directory portals), as a mouse-driven mirror of
   `o`/`c`/`f`.
@@ -135,7 +153,7 @@ nothing unofficial or UI-scripted:
 ## Troubleshooting
 
 If the leader key alert appears but subsequent keys (`a`, `o`, `c`, `d`, `s`,
-`f`) don't seem to register and instead leak through to whatever app is focused,
+`f`, `j`) don't seem to register and instead leak through to whatever app is focused,
 check **System Settings → Privacy & Security → Input Monitoring** and make
 sure Hammerspoon is listed there and enabled (this is separate from
 Accessibility). If you just added it, **fully restart macOS** — a simple
@@ -158,3 +176,12 @@ don't use.
   would tie this Spoon to a specific terminal app.
 - **Kind on add** — auto-detected from the path, never prompted (see M2
   above).
+- **Jump vs. explicit-add-only** — Portal's own design principle (see
+  `dotfiles/shortcut-system.md`'s "`o` domain detail") is explicit-add only,
+  no filesystem-wide fuzzy search. Jump (M9) is a deliberate, narrowly-scoped
+  exception: it tracks only directories actually visited in Finder (not an
+  arbitrary scan), and lives entirely outside the portals list — no other
+  action's behavior changes. It also introduces Portal's first external
+  binary dependency (`zoxide`), which is resolved to an absolute path once at
+  start (`zoxide.lua`) since Hammerspoon's `hs.execute` doesn't inherit the
+  login shell's Homebrew `PATH`.

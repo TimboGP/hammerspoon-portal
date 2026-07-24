@@ -91,6 +91,7 @@ end
 -- stays a plain dofile()'d table (matches this repo's other Spoons).
 function M.start(config, deps)
   local store, capture, chooser, actions, flatten = deps.store, deps.capture, deps.chooser, deps.actions, deps.flatten
+  local zoxide, jump = deps.zoxide, deps.jump
 
   -- Unbound: entry is now driven by the shared keybind_registry (see
   -- init.lua's registration under path {"o"}), not a direct hs.hotkey bind
@@ -116,6 +117,8 @@ function M.start(config, deps)
       fn = function() flatten.pick(store, chooser, actions, capture) end },
     { key = "n", short = "new window", description = "open a new Finder window",
       fn = function() actions.openNewFinderWindow() end },
+    { key = "j", short = "jump", description = "jump to a zoxide-ranked Finder-visited directory",
+      fn = function() jump.pick(zoxide, chooser, actions) end },
   }
   M._bindings = bindings
 

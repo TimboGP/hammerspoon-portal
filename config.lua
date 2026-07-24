@@ -20,4 +20,10 @@ return {
   -- (Finder-pasteable); "path" writes a plain path string. Hold shift while
   -- selecting a chooser row to get the other shape for that one copy.
   defaultCopyKind = "file",
+
+  -- Absolute path to the `zoxide` binary, for the `j` (jump) action. nil
+  -- auto-detects it (via `command -v` under the user's login shell, then the
+  -- common Homebrew install locations) - only set this if zoxide lives
+  -- somewhere non-standard.
+  zoxideBin = nil,
 }

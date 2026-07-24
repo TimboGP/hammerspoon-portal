@@ -20,6 +20,9 @@ local capture = dofile(obj.spoonPath .. "capture.lua")
 local chooser = dofile(obj.spoonPath .. "chooser.lua")
 local actions = dofile(obj.spoonPath .. "actions.lua")
 local flatten = dofile(obj.spoonPath .. "flatten.lua")
+local zoxide = dofile(obj.spoonPath .. "zoxide.lua")
+local finderWatcher = dofile(obj.spoonPath .. "finder_watcher.lua")
+local jump = dofile(obj.spoonPath .. "jump.lua")
 local menubar = dofile(obj.spoonPath .. "menubar.lua")
 local modal = dofile(obj.spoonPath .. "modal.lua")
 local dropover = dofile(obj.spoonPath .. "dropover.lua")
@@ -31,12 +34,16 @@ end
 
 function obj:start()
   store.start(self.config)
+  zoxide.start(self.config)
+  finderWatcher.start(self.config, { zoxide = zoxide })
   modal.start(self.config, {
     store = store,
     capture = capture,
     chooser = chooser,
     actions = actions,
     flatten = flatten,
+    zoxide = zoxide,
+    jump = jump,
   })
   menubar.start(store, actions, {
     bindings = modal.bindings(),
@@ -72,6 +79,7 @@ end
 function obj:stop()
   KeybindRegistry.unbindBySpoon(self.name)
   menubar.stop()
+  finderWatcher.stop()
   return self
 end
 
